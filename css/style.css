@@ -1,0 +1,29 @@
+div.menu-box > ul {
+    padding-left: 0px;
+    background-color: #3D99CE;
+    text-align: center;
+}
+div.menu-box > ul > li {
+    display: inline-block;
+    padding: 10px 20px;
+}
+div.menu-box > ul > li:hover {
+    background-color: #2779BF;
+}
+div.menu-box > ul > li > a {
+    color: white;
+    text-decoration: none;
+}
+div.menu-box > ul > li > p {
+    color: white;
+    text-decoration: none;
+}
+
+
+div.home-text {
+    text-align:  center;
+}
+
+section.signup-form > form {
+
+}

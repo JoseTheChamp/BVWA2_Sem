@@ -21,9 +21,5 @@ div.menu-box > ul > li > p {
 
 
 div.home-text {
-    text-align:  center;
-}
-
-section.signup-form > form {
-
+    align-content: center;
 }

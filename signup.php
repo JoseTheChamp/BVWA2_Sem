@@ -12,5 +12,23 @@ include_once 'header.php'
     </form>
 </section>
 <?php
+if (isset($_GET["error"])){
+    if ($_GET["error"] == "emptyinput"){
+        echo "<p>Fill in all fields!</p>";
+    }else if($_GET["error"] == "usernametaken"){
+        echo "<p>This username is already taken!</p>";
+    }
+    else if($_GET["error"] == "invaliduid"){
+        echo "<p>This username is not allowed!</p>";
+    }
+    else if($_GET["error"] == "invalidemail"){
+        echo "<p>This is not valid email!</p>";
+    }
+    else if($_GET["error"] == "passwordsdontmatch"){
+        echo "<p>Passwords do not match!</p>";
+    }
+}
+?>
+<?php
 include_once 'footer.php'
 ?>

@@ -7,7 +7,10 @@ if (isset($_POST["submit"])){
     require_once 'dbh.inc.php';
     require_once 'functions.inc.php';
 
-    //TODO - kontrola vstutpu + reporting
+    if(emptyInputlogin($uid,$pwd) !== false){
+        header("location: ../login.php?error=emptyinput");
+        exit();
+    }
 
     loginUser($conn,$uid,$pwd);
 

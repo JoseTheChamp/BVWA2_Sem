@@ -13,17 +13,18 @@ session_start();
     <div class="menu-box">
         <ul>
             <li><a href="index.php">Home</a></li>
-            <li><a href="editor.php">Editor</a></li>
-            <li><a href="myGallery.php">My Gallery</a></li>
-            <li><a href="gallery.php">Gallery</a></li>
             <?php
             if (isset($_SESSION["userId"])){
+                echo "<li><a href='editor.php'>Editor</a></li>";
+                echo "<li><a href='mygallery.php'>My Gallery</a></li>";
+                echo "<li><a href='gallery.php'>Gallery</a></li>";
                 echo "<li><a href='includes/logout.inc.php'>Log Out</a></li>";
                 $txt = $_SESSION['userUid'];
                 echo "<li><p>UserName: $txt</p></li>";
             }else{
-                echo "<li><a href='login.php'>Log In</a></li>
-                      <li><a href='signup.php'>Sign In</a></li>";
+                echo "  <li><a href='gallery.php'>Gallery</a></li>
+                        <li><a href='login.php'>Log In</a></li>
+                        <li><a href='signup.php'>Sign In</a></li>";
             }
             ?>
         </ul>

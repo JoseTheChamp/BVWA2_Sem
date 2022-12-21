@@ -1,4 +1,5 @@
 <?php
+session_start();
 if (isset($_POST["submit"])){
     $name = $_POST["name"];
     $part = $_POST["part"];
@@ -12,15 +13,19 @@ if (isset($_POST["submit"])){
     require_once 'dbh.inc.php';
     require_once  'functions.inc.php';
 
-    //TODO - kontrola vstupu
-
-    if(uidExists($conn,$uid,$email)){
-        header("location: ../signup.php?error=usernametaken");
+    if ($_SESSION["userId"] === null){
+        header("location: ../editor.php?error=usernotloggedin");
         exit();
     }
-
-    createUser($conn,$email,$uid,$pwd);
-
+    if(emptyInputEditor($name,$part,$series,$author,$age,$text,$genres) !== false){
+        header("location: ../editor.php?error=emptyinput");
+        exit();
+    }
+    if (isset($_SESSION["modify"])){
+        updateWork($conn,$_SESSION["modify"],$_SESSION["userId"],$name,$part,$series,$author,$age,$genres,$tags,$text);
+    }else{
+        createWork($conn,$_SESSION["userId"],$name,$part,$series,$author,$age,$genres,$tags,$text);
+    }
 }else{
-    header("location: ../signup.php");
+    header("location: ../login.php");
 }

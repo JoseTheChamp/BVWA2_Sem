@@ -35,7 +35,7 @@ echo "<h1>Name: $workIndexed[2]</h1>";
 echo "<p>Part: $workIndexed[3]</p>";
 echo "<p>Series: $workIndexed[4]</p>";
 echo "<p>Author: $workIndexed[5]</p>";
-echo "<p>Minimum age requirement:: $workIndexed[6]</p>";
+echo "<p>Minimum age requirement: $workIndexed[6]</p>";
 $genres = getAllGenresFromWork($conn,$work["workId"]);
 echo "<p>Genres: ";
 foreach ($genres as &$value){
@@ -55,15 +55,18 @@ echo "<p>$workIndexed[7]</p><br>";
 if ($work["workPub"] !== 0){
     $numLikes = getNumberOfLikesFromWorkId($conn,$work["workId"]);
     echo "<p>Likes: $numLikes   ";
-
-    if (!didUserLikedWork($conn,$_SESSION["userId"],$work["workId"])){
-        $key = "workId";
-        echo "<a href='includes/like.inc.php?id=$work[$key]'>Like</a>";
-    }else{
-        $key = "workId";
-        echo "<a href='includes/like.inc.php?id=$work[$key]&remove=true'>Remove like</a>";
+    if(isset($_SESSION["userId"])){
+        if (!didUserLikedWork($conn,$_SESSION["userId"],$work["workId"])){
+            $key = "workId";
+            echo "<a href='includes/like.inc.php?id=$work[$key]'>Like</a>";
+        }else{
+            $key = "workId";
+            echo "<a href='includes/like.inc.php?id=$work[$key]&remove=true'>Remove like</a>";
+        }
     }
     echo "</p>";
+
+
 
 
     echo "<h3>Comments:</h3>";
@@ -74,7 +77,7 @@ if ($work["workPub"] !== 0){
         $key2 = "commentText";
         $key3 = "commentId";
         echo "$value[$key1]: $value[$key2]<br>";
-        if ($value["userId"] === $_SESSION["userId"]){
+        if (isset($_SESSION["userId"]) && $value["userId"] === $_SESSION["userId"]){
             $key = "workId";
             echo "
             <form action='includes/comment.inc.php?id=$work[$key]&remove=$value[$key3]' method='post'>
@@ -85,8 +88,9 @@ if ($work["workPub"] !== 0){
     }
     echo "</p>";
 
-    $key = "workId";
-    echo "
+    if(isset($_SESSION["userId"])){
+        $key = "workId";
+        echo "
     <section class='comment-form'>
         <h3>Make a comment!</h3>
         <form action='includes/comment.inc.php?id=$work[$key]' method='post'>
@@ -95,6 +99,9 @@ if ($work["workPub"] !== 0){
         </form>
     </section>
     ";
+    }else{
+        echo "<p>If you want to comment and like, you need to be logged in.</p>";
+    }
 }
 
 

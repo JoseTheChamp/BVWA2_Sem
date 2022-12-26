@@ -26,12 +26,17 @@ include_once 'header.php'
         <?php
         $data = getAllWorksFromUser($conn,$_SESSION["userId"]);
         foreach ($data as &$value) {
-            echo "<tr><td>$value[0]</td>";
-            echo "<td>$value[1]</td>";
-            echo "<td>$value[2]</td>";
-            echo "<td>$value[3]</td>";
+            $key = "workName";
+            echo "<tr><td>$value[$key]</td>";
+            $key = "workPart";
+            echo "<td>$value[$key]</td>";
+            $key = "workSeries";
+            echo "<td>$value[$key]</td>";
+            $key = "workAuthor";
+            echo "<td>$value[$key]</td>";
+            $key = "workId";
 
-            $genres = getAllGenresFromWork($conn,$value[4]);
+            $genres = getAllGenresFromWork($conn,$value[$key]);
             echo "<td>";
             foreach ($genres as &$value2) {
                 $value2 = $value2["genreName"];
@@ -39,18 +44,19 @@ include_once 'header.php'
             }
             echo "</td>";
 
-            $tags = getAllTagsFromWork($conn,$value[4]);
+            $tags = getAllTagsFromWork($conn,$value[$key]);
             echo "<td>";
             foreach ($tags as &$value1) {
                 $value1 = $value1["tagName"];
                 echo "$value1, ";
             }
             echo "</td>";
-            echo "<td><a href='view.php?id=$value[4]'>View</a></td>";
-            echo "<td><a href='editor.php?modify=$value[4]'>Modify</a></td>";
-            echo "<td><a onclick='deleteFun()' href='includes/delete.inc.php?id=$value[4]'>Delete</a></td>";
-            if ($value[5] == 0){
-                echo "<td><a onclick='publishFun()' href='includes/publish.inc.php?id=$value[4]'>Publish</a></td></tr>";
+            echo "<td><a href='view.php?id=$value[$key]'>View</a></td>";
+            echo "<td><a href='editor.php?modify=$value[$key]'>Modify</a></td>";
+            echo "<td><a onclick='deleteFun()' href='includes/delete.inc.php?id=$value[$key]'>Delete</a></td>";
+            $innerKey = "workPub";
+            if ($value[$innerKey] == 0){
+                echo "<td><a onclick='publishFun()' href='includes/publish.inc.php?id=$value[$key]'>Publish</a></td></tr>";
             }else{
                 echo "<td>Published</td></tr>";
             }

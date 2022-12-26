@@ -155,27 +155,29 @@ function createWork($conn,$userId,$name,$part,$series,$author,$age,$genres,$tags
     }
     mysqli_stmt_bind_param($stmt,"sssssss",$userId,$name,$part,$series,$author,$age,$text);
     mysqli_stmt_execute($stmt);
+    $id = mysqli_insert_id($conn);
     mysqli_stmt_close($stmt);
 
+
     foreach ($genres as &$value) {
-        $sql = "INSERT INTO work_genre (workId,genreId) VALUES ( (SELECT workId FROM works WHERE workName = ?), (SELECT genreId FROM genres WHERE genreName = ?));";
+        $sql = "INSERT INTO work_genre (workId,genreId) VALUES ( ?, (SELECT genreId FROM genres WHERE genreName = ?));";
         $stmt = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt,$sql)){
             header("location: ../editor.php?error=stmtfailedgenres");
             exit();
         }
-        mysqli_stmt_bind_param($stmt,"ss",$name,$value);
+        mysqli_stmt_bind_param($stmt,"ss",$id,$value);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     }
     foreach ($tags as &$value) {
-        $sql = "INSERT INTO work_tag (workId,tagId) VALUES ( (SELECT workId FROM works WHERE workName = ?), (SELECT tagId FROM tags WHERE tagName = ?));";
+        $sql = "INSERT INTO work_tag (workId,tagId) VALUES ( ?, (SELECT tagId FROM tags WHERE tagName = ?));";
         $stmt = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt,$sql)){
             header("location: ../editor.php?error=stmtfailedtags");
             exit();
         }
-        mysqli_stmt_bind_param($stmt,"ss",$name,$value);
+        mysqli_stmt_bind_param($stmt,"ss",$id,$value);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     }
@@ -198,7 +200,7 @@ function getAllWorksFromUser($conn,$userId){
 
     $list = array();
     while($row=mysqli_fetch_assoc($resultData)){
-        array_push($list,array($row["workName"],$row["workPart"],$row["workSeries"],$row["workAuthor"],$row["workId"],$row["workPub"]));
+        array_push($list,$row);
     }
     mysqli_stmt_close($stmt);
     return $list;
@@ -264,8 +266,7 @@ function getAllTagsFromWork($conn,$workId){
     return $list;
 }
 
-function getAllPublishedWorks($conn){
-    $sql = "SELECT * FROM works WHERE workPub = 1;";
+function getAllPublishedWorks($conn,$sql){
     $stmt = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt,$sql)){
         header("location: ../index.php?error=stmtfailed");
@@ -292,6 +293,7 @@ function updateWork($conn,$workId,$userId,$name,$part,$series,$author,$age,$genr
     }
     mysqli_stmt_bind_param($stmt,"sssssss",$name,$part,$series,$author,$age,$text,$workId);
     mysqli_stmt_execute($stmt);
+    $id = mysqli_insert_id($conn);
     mysqli_stmt_close($stmt);
 
 
@@ -301,18 +303,18 @@ function updateWork($conn,$workId,$userId,$name,$part,$series,$author,$age,$genr
         header("location: ../editor.php?error=stmtfaileddeleteworkgenre");
         exit();
     }
-    mysqli_stmt_bind_param($stmt,"s",$workId);
+    mysqli_stmt_bind_param($stmt,"s",$id);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
     foreach ($genres as &$value) {
-        $sql = "INSERT INTO work_genre (workId,genreId) VALUES ( (SELECT workId FROM works WHERE workName = ?), (SELECT genreId FROM genres WHERE genreName = ?));";
+        $sql = "INSERT INTO work_genre (workId,genreId) VALUES ( ?, (SELECT genreId FROM genres WHERE genreName = ?));";
         $stmt = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt,$sql)){
             header("location: ../editor.php?error=stmtfailedgenres");
             exit();
         }
-        mysqli_stmt_bind_param($stmt,"ss",$name,$value);
+        mysqli_stmt_bind_param($stmt,"ss",$id,$value);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     }
@@ -324,18 +326,18 @@ function updateWork($conn,$workId,$userId,$name,$part,$series,$author,$age,$genr
         header("location: ../editor.php?error=stmtfaileddeleteworktag");
         exit();
     }
-    mysqli_stmt_bind_param($stmt,"s",$workId);
+    mysqli_stmt_bind_param($stmt,"s",$id);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
     foreach ($tags as &$value) {
-        $sql = "INSERT INTO work_tag (workId,tagId) VALUES ( (SELECT workId FROM works WHERE workName = ?), (SELECT tagId FROM tags WHERE tagName = ?));";
+        $sql = "INSERT INTO work_tag (workId,tagId) VALUES ( ?, (SELECT tagId FROM tags WHERE tagName = ?));";
         $stmt = mysqli_stmt_init($conn);
         if (!mysqli_stmt_prepare($stmt,$sql)){
             header("location: ../editor.php?error=stmtfailedtags");
             exit();
         }
-        mysqli_stmt_bind_param($stmt,"ss",$name,$value);
+        mysqli_stmt_bind_param($stmt,"ss",$id,$value);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     }
@@ -520,6 +522,60 @@ function removeComment($conn,$commentId){
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 }
+
+function addTag($conn,$newTagName){
+    //TODO osetreni
+    $sql = "SELECT * FROM tags WHERE tagName = ?;";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt,$sql)){
+        header("location: ../index.php?error=stmtfailedAddTag");
+        exit();
+    }
+    mysqli_stmt_bind_param($stmt,"s",$newTagName);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    if (mysqli_fetch_assoc($resultData)){
+        mysqli_stmt_close($stmt);
+        return true;
+    }else{
+        mysqli_stmt_close($stmt);
+        $sql = "INSERT INTO tags (tagId, tagName) VALUES (NULL, ?);";
+        $stmt = mysqli_stmt_init($conn);
+        if (!mysqli_stmt_prepare($stmt,$sql)){
+            header("location: ../index.php?error=stmtfailedAddTag");
+            exit();
+        }
+        mysqli_stmt_bind_param($stmt,"s",$newTagName);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+        return false;
+    }
+}
+
+
+function getDateOfPublicationFromWorkId($conn,$workId){
+    $sql = "SELECT datePub FROM works WHERE workId = ?;";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt,$sql)){
+        header("location: ../index.php?error=stmtfailed");
+        exit();
+    }
+    mysqli_stmt_bind_param($stmt,"s",$workId);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    if ($row = mysqli_fetch_assoc($resultData)){
+        mysqli_stmt_close($stmt);
+        return $row;
+    }else{
+        mysqli_stmt_close($stmt);
+        $result = false;
+        return $result;
+    }
+}
+
+
 
 
 

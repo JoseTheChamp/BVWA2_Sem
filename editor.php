@@ -25,7 +25,13 @@ if(isset($_GET["modify"])){
 
     <section class="editor-form">
         <h2>Editor</h2>
+        <form action="includes/addTag.inc.php" method="post">
+            <h3>New Tag</h3>
+            <input type="text" name="newTagName" placeholder="New Tag Name...">
+            <button type="submit" name="submit">Add New Tag</button>
+        </form>
         <form action="includes/editor.inc.php" method="post">
+            <h3>New Work</h3>
             <input type="text" name="name" placeholder="Name..."
                 <?php
                 if (isset($work)){

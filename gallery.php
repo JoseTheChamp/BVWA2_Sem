@@ -6,8 +6,7 @@ require_once 'includes/functions.inc.php';
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
     <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
-
-    <h2>Your works:</h2>
+    <h2>Published works:</h2>
     <form action="gallery.php" method="post">
         <label>Filter by: </label>
         <input type="text" name="filterName" placeholder="Work name..."
@@ -54,11 +53,14 @@ require_once 'includes/functions.inc.php';
         }
         ?>
         >
-        <select data-placeholder='Begin typing a name to filter...' multiple class='chosen-select' name='genres[]'>
+        <select data-placeholder='Genres...' multiple class='chosen-select' name='genres[]'>
             <option value=''></option>
             <?php
             if (isset($_POST["genres"])){
                 $genresSelected = $_POST["genres"];
+                $_SESSION["selGenres"] = $genresSelected;
+            }else{
+                unset($_SESSION["selGenres"]);
             }
             $genres = getAllGenres($conn);
             foreach ($genres as &$value) {
@@ -78,11 +80,14 @@ require_once 'includes/functions.inc.php';
                 }
             }
             ?></select>
-        <select data-placeholder='Begin typing a name to filter...' multiple class='chosen-select' name='tags[]'>
+        <select data-placeholder='Tags...' multiple class='chosen-select' name='tags[]'>
             <option value=''></option>
             <?php
-            if ($_POST["tags"]){
+            if (isset($_POST["tags"])){
                 $tagsSelected = $_POST["tags"];
+                $_SESSION["selTags"] = $tagsSelected;
+            }else{
+                unset($_SESSION["selTags"]);
             }
             $tags = getAllTags($conn);
             foreach ($tags as &$value) {
@@ -101,8 +106,8 @@ require_once 'includes/functions.inc.php';
                     echo "<option>$value</option>";
                 }
             }
-            ?></select>
-        <label>Order by: </label>
+            ?></select><br>
+        <label for="dates">Order by: </label>
         <input type="radio" id="dates" checked="checked" name="orderBy" value="dates"
         <?php
         if (!isset($_POST["orderBy"]) || $_POST["orderBy"] === "dates"){
@@ -172,7 +177,18 @@ require_once 'includes/functions.inc.php';
             $key = "filterAuthor";
             $sql = $sql . " AND workAuthor = '$_SESSION[$key]'";
         }
-
+        if (isset($_SESSION["selGenres"]) && $_SESSION["selGenres"] !== ""){
+            $selGenres = $_SESSION["selGenres"];
+            foreach ($selGenres as &$genval){
+                $sql = $sql . " AND works.workId IN (SELECT works.workId FROM works JOIN work_genre USING(workId) JOIN genres USING(genreId) WHERE genreName = '$genval')";
+            }
+        }
+        if (isset($_SESSION["selTags"]) && $_SESSION["selTags"] !== ""){
+            $selTags = $_SESSION["selTags"];
+            foreach ($selTags as &$tagval){
+                $sql = $sql . " AND works.workId IN (SELECT works.workId FROM works JOIN work_tag USING(workId) JOIN tags USING(tagId) WHERE tagName = '$tagval')";
+            }
+        }
         if (!isset($_SESSION["orderBy"]) || $_SESSION["orderBy"] === "dates"){
             $sql .= " order by works.datePub DESC;";
         }else if($_SESSION["orderBy"] === "likes"){
@@ -181,7 +197,7 @@ require_once 'includes/functions.inc.php';
             $sql .= " group by works.workId order by comments DESC;";
         }
 
-        echo $sql;
+        //echo $sql;
         $data = getAllPublishedWorks($conn,$sql);
 
         foreach ($data as &$value) {
@@ -210,12 +226,12 @@ require_once 'includes/functions.inc.php';
             }
             echo "</td>";
             $numOfLikes = getNumberOfLikesFromWorkId($conn,$value[$key]);
-            echo "<td><p>$numOfLikes</p></td>";
+            echo "<td>$numOfLikes</td>";
             $numOfComments = getNumberOfCommentsFromWorkId($conn,$value[$key]);
-            echo "<td><p>$numOfComments</p></td>";
+            echo "<td>$numOfComments</td>";
             $dateOfPublication = $value["datePub"];
-            echo "<td><p>$dateOfPublication</p></td>";
-            echo "<td><a href='view.php?id=$value[$key]'>View</a></td>";
+            echo "<td>$dateOfPublication</td>";
+            echo "<td><a href='view.php?id=$value[$key]'>View</a></td></tr>";
         }
         ?>
     </table>

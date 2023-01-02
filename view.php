@@ -32,29 +32,29 @@ exit();
 page:
 $workIndexed = array_values($work);
 echo "<h1>Name: $workIndexed[2]</h1>";
-echo "<p>Part: $workIndexed[3]</p>";
-echo "<p>Series: $workIndexed[4]</p>";
-echo "<p>Author: $workIndexed[5]</p>";
-echo "<p>Minimum age requirement: $workIndexed[6]</p>";
+echo "<p><b>Part:</b> $workIndexed[3]</p>";
+echo "<p><b>Series:</b> $workIndexed[4]</p>";
+echo "<p><b>Author:</b> $workIndexed[5]</p>";
+echo "<p><b>Minimum age requirement:</b> $workIndexed[6]</p>";
 $genres = getAllGenresFromWork($conn,$work["workId"]);
-echo "<p>Genres: ";
+echo "<p><b>Genres:</b>  ";
 foreach ($genres as &$value){
     $key = "genreName";
     echo "$value[$key], ";
 }
 echo "</p>";
 $tags = getAllTagsFromWork($conn,$work["workId"]);
-echo "<p>Tags: ";
+echo "<p><b>Tags:</b>  ";
 foreach ($tags as &$value){
     $key = "tagName";
     echo "$value[$key], ";
 }
 echo "</p>";
-echo "<p>Text:</p>";
-echo "<p>$workIndexed[7]</p><br>";
+echo "<p><b>Text:</b> </p>";
+echo "<p style='white-space: pre-wrap;font-size: smaller'>$workIndexed[7]</p><br>";
 if ($work["workPub"] !== 0){
     $numLikes = getNumberOfLikesFromWorkId($conn,$work["workId"]);
-    echo "<p>Likes: $numLikes   ";
+    echo "<p><b>Likes:</b>  $numLikes   ";
     if(isset($_SESSION["userId"])){
         if (!didUserLikedWork($conn,$_SESSION["userId"],$work["workId"])){
             $key = "workId";

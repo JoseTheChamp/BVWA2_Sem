@@ -186,14 +186,12 @@ function createWork($conn,$userId,$name,$part,$series,$author,$age,$genres,$tags
     exit();
 }
 
-function getAllWorksFromUser($conn,$userId){
-    $sql = "SELECT * FROM works WHERE ownerId = ?;";
+function getAllWorksFromUser($conn,$sql){
     $stmt = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt,$sql)){
         header("location: ../signup.php?error=stmtfailed");
         exit();
     }
-    mysqli_stmt_bind_param($stmt,"s",$userId);
     mysqli_stmt_execute($stmt);
 
     $resultData = mysqli_stmt_get_result($stmt);
@@ -293,9 +291,7 @@ function updateWork($conn,$workId,$userId,$name,$part,$series,$author,$age,$genr
     }
     mysqli_stmt_bind_param($stmt,"sssssss",$name,$part,$series,$author,$age,$text,$workId);
     mysqli_stmt_execute($stmt);
-    $id = mysqli_insert_id($conn);
     mysqli_stmt_close($stmt);
-
 
     $sql = "DELETE FROM work_genre WHERE workId = ?;";
     $stmt = mysqli_stmt_init($conn);
@@ -303,9 +299,10 @@ function updateWork($conn,$workId,$userId,$name,$part,$series,$author,$age,$genr
         header("location: ../editor.php?error=stmtfaileddeleteworkgenre");
         exit();
     }
-    mysqli_stmt_bind_param($stmt,"s",$id);
+    mysqli_stmt_bind_param($stmt,"s",$workId);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
+
 
     foreach ($genres as &$value) {
         $sql = "INSERT INTO work_genre (workId,genreId) VALUES ( ?, (SELECT genreId FROM genres WHERE genreName = ?));";
@@ -314,10 +311,11 @@ function updateWork($conn,$workId,$userId,$name,$part,$series,$author,$age,$genr
             header("location: ../editor.php?error=stmtfailedgenres");
             exit();
         }
-        mysqli_stmt_bind_param($stmt,"ss",$id,$value);
+        mysqli_stmt_bind_param($stmt,"ss",$workId,$value);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     }
+
 
 
     $sql = "DELETE FROM work_tag WHERE workId = ?;";
@@ -326,7 +324,7 @@ function updateWork($conn,$workId,$userId,$name,$part,$series,$author,$age,$genr
         header("location: ../editor.php?error=stmtfaileddeleteworktag");
         exit();
     }
-    mysqli_stmt_bind_param($stmt,"s",$id);
+    mysqli_stmt_bind_param($stmt,"s",$workId);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
@@ -337,7 +335,7 @@ function updateWork($conn,$workId,$userId,$name,$part,$series,$author,$age,$genr
             header("location: ../editor.php?error=stmtfailedtags");
             exit();
         }
-        mysqli_stmt_bind_param($stmt,"ss",$id,$value);
+        mysqli_stmt_bind_param($stmt,"ss",$workId,$value);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     }

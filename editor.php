@@ -30,7 +30,7 @@ if (isset($_GET["modify"])) {
                 <label for="newtagName">New tag name:</label>
                 <input id="newtagName" type="text" name="newTagName" placeholder="Tag name...">
             </div>
-            <button type="submit" name="submit">Add New Tag</button>
+            <button type="submit" id="submit" name="submit">Add New Tag</button>
         </form>
         <form action="includes/editor.inc.php" method="post">
             <h3>New Work</h3>

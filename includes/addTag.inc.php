@@ -10,18 +10,18 @@ if (!isset($_POST["submit"])){
 if (addTag($conn,$_POST["newTagName"]) === false){
     if (isset($_SESSION["modify"])){
         $id = $_SESSION["modify"];
-        header("location: ../editor.php?modify=$id&error=thisTagAlreadyExists");
+        header("location: ../editor.php?modify=$id");
         exit();
     }else{
-        header("location: ../editor.php?error=thisTagAlreadyExists");
+        header("location: ../editor.php?");
         exit();
     }
 }
 if (isset($_SESSION["modify"])){
     $id = $_SESSION["modify"];
-    header("location: ../editor.php?modify=$id");
+    header("location: ../editor.php?modify=$id&error=thisTagAlreadyExists");
     exit();
 }else{
-    header("location: ../editor.php");
+    header("location: ../editor.php?error=thisTagAlreadyExists");
     exit();
 }

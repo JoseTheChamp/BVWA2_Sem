@@ -2,10 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9ef1cfab-2021-4613-8cf5-4d8945db76f5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/editor.php" beforeDir="false" afterPath="$PROJECT_DIR$/editor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/footer.php" beforeDir="false" afterPath="$PROJECT_DIR$/footer.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gallery.php" beforeDir="false" afterPath="$PROJECT_DIR$/gallery.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/header.php" beforeDir="false" afterPath="$PROJECT_DIR$/header.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/addTag.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/addTag.inc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/dbh.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/dbh.inc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/delete.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/delete.inc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/editor.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/editor.inc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/login.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/login.inc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/publish.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/publish.inc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/signup.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/signup.inc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/switchFavoriteGallery.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/switchFavoriteGallery.inc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/includes/switchFavoriteView.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/includes/switchFavoriteView.inc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/login.php" beforeDir="false" afterPath="$PROJECT_DIR$/login.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mygallery.php" beforeDir="false" afterPath="$PROJECT_DIR$/mygallery.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/signup.php" beforeDir="false" afterPath="$PROJECT_DIR$/signup.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/view.php" beforeDir="false" afterPath="$PROJECT_DIR$/view.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,7 +68,7 @@
       <workItem from="1671534296285" duration="30993000" />
       <workItem from="1672054257038" duration="16693000" />
       <workItem from="1672647218235" duration="11379000" />
-      <workItem from="1672751963077" duration="11406000" />
+      <workItem from="1672751963077" duration="11512000" />
     </task>
     <servers />
   </component>

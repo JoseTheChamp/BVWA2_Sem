@@ -2,28 +2,28 @@
 include_once 'header.php';
 require_once 'includes/dbh.inc.php';
 require_once 'includes/functions.inc.php';
-if(isset($_GET["id"])){
+if (isset($_GET["id"])) {
     $id = $_GET["id"];
-    $work = getWorkFromWorkId($conn,$id);
-    if($work !== false){
-        if ($work["workPub"] !== 0){
+    $work = getWorkFromWorkId($conn, $id);
+    if ($work !== false) {
+        if ($work["workPub"] !== 0) {
             goto page;
-        }else if (isset($_SESSION["userId"])){
-            if($work["ownerId"] === $_SESSION["userId"]){
+        } else if (isset($_SESSION["userId"])) {
+            if ($work["ownerId"] === $_SESSION["userId"]) {
                 goto page;
-            }else{
+            } else {
                 header("location: ../index.php?error=CannotViewForeignUnpublishedWork");
                 exit();
             }
-        }else{
+        } else {
             header("location: ../index.php?error=WorkWithThisIdIsNotPublished");
             exit();
         }
-    }else{
+    } else {
         header("location: ../index.php?error=WorkDoesNotExist");
         exit();
     }
-}else{
+} else {
     header("location: ../index.php?error=NoIdProvided");
     exit();
 }
@@ -37,16 +37,16 @@ echo "<p><b>Part:</b> $workIndexed[3]</p>";
 echo "<p><b>Series:</b> $workIndexed[4]</p>";
 echo "<p><b>Author:</b> $workIndexed[5]</p>";
 echo "<p><b>Minimum age requirement:</b> $workIndexed[6]</p>";
-$genres = getAllGenresFromWork($conn,$work["workId"]);
+$genres = getAllGenresFromWork($conn, $work["workId"]);
 echo "<p><b>Genres:</b>  ";
-foreach ($genres as &$value){
+foreach ($genres as &$value) {
     $key = "genreName";
     echo "$value[$key], ";
 }
 echo "</p>";
-$tags = getAllTagsFromWork($conn,$work["workId"]);
+$tags = getAllTagsFromWork($conn, $work["workId"]);
 echo "<p><b>Tags:</b>  ";
-foreach ($tags as &$value){
+foreach ($tags as &$value) {
     $key = "tagName";
     echo "$value[$key], ";
 }
@@ -54,27 +54,27 @@ echo "</p>";
 echo "<p><b>Text:</b> </p>";
 echo "<p style='white-space: pre-wrap;font-size: smaller'>$workIndexed[7]</p><br>";
 
-if ($work["workPub"] !== 0){ // only when published
+if ($work["workPub"] !== 0) { // only when published
 
     //Favorite
-    if(isset($_SESSION["userId"])){ //only when loggged in
-        if (getFavorite($conn,$_SESSION["userId"],$work["workId"])){
+    if (isset($_SESSION["userId"])) { //only when loggged in
+        if (getFavorite($conn, $_SESSION["userId"], $work["workId"])) {
             $key = "workId";
             echo "<a href='includes/switchFavoriteView.inc.php?action=remove&workId=$work[$key]'>Remove favorite</a>";
-        }else{
+        } else {
             $key = "workId";
             echo "<a href='includes/switchFavoriteView.inc.php?action=add&workId=$work[$key]'>Add favorite</a>";
         }
     }
 
     //Likes
-    $numLikes = getNumberOfLikesFromWorkId($conn,$work["workId"]);
+    $numLikes = getNumberOfLikesFromWorkId($conn, $work["workId"]);
     echo "<p><b>Likes:</b>  $numLikes   ";
-    if(isset($_SESSION["userId"])){ //only when loggged in
-        if (!didUserLikedWork($conn,$_SESSION["userId"],$work["workId"])){
+    if (isset($_SESSION["userId"])) { //only when loggged in
+        if (!didUserLikedWork($conn, $_SESSION["userId"], $work["workId"])) {
             $key = "workId";
             echo "<a href='includes/like.inc.php?id=$work[$key]'>Like</a>";
-        }else{
+        } else {
             $key = "workId";
             echo "<a href='includes/like.inc.php?id=$work[$key]&remove=true'>Remove like</a>";
         }
@@ -82,17 +82,15 @@ if ($work["workPub"] !== 0){ // only when published
     echo "</p>";
 
 
-
-
     echo "<h3>Comments:</h3>";
-    $comments = getAllCommentsOfWork($conn,$work["workId"]);
+    $comments = getAllCommentsOfWork($conn, $work["workId"]);
     echo "<p>";
-    foreach ($comments as &$value){
+    foreach ($comments as &$value) {
         $key1 = "userUid";
         $key2 = "commentText";
         $key3 = "commentId";
         echo "$value[$key1]: $value[$key2]<br>";
-        if (isset($_SESSION["userId"]) && $value["userId"] === $_SESSION["userId"]){ //only when loggged in
+        if (isset($_SESSION["userId"]) && $value["userId"] === $_SESSION["userId"]) { //only when loggged in
             $key = "workId";
             echo "
             <form style='margin-top: 0' action='includes/comment.inc.php?id=$work[$key]&remove=$value[$key3]' method='post'>
@@ -103,7 +101,7 @@ if ($work["workPub"] !== 0){ // only when published
     }
     echo "</p>";
 
-    if(isset($_SESSION["userId"])){ //only when loggged in
+    if (isset($_SESSION["userId"])) { //only when loggged in
         $key = "workId";
         echo "
     <section class='comment-form'>
@@ -114,7 +112,7 @@ if ($work["workPub"] !== 0){ // only when published
         </form>
     </section>
     ";
-    }else{
+    } else {
         echo "<p>If you want to comment and like, you need to be logged in.</p>";
     }
 }

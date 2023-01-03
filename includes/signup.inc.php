@@ -1,5 +1,5 @@
 <?php
-if (isset($_POST["submit"])){
+if (isset($_POST["submit"])) {
     $uid = $_POST["uid"];
     $email = $_POST["email"];
     $pwd = $_POST["pwd"];

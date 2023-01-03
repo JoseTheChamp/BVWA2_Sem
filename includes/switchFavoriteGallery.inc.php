@@ -26,5 +26,5 @@ if (isset($_GET["workId"])){
         exit();
     }
 }
-header("location: ../gallery.php?debug=5");
+header("location: ../gallery.php");
 exit();

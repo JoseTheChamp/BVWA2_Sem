@@ -298,9 +298,9 @@ require_once 'includes/functions.inc.php';
             if (!empty($_SESSION["userId"])){
                 $res = getFavorite($conn,$_SESSION["userId"],$value[$key]);
                 if (!$res){
-                    echo "<td><form action='includes/switchFavorite.inc.php?action=add&workId=$value[$key]' method='post'><button style='height: 100%;width: 100%;border: transparent;background: transparent' type='submit'>&nbsp;</button></form></td>";
+                    echo "<td><form action='includes/switchFavoriteGallery.inc.php?action=add&workId=$value[$key]' method='post'><button style='height: 100%;width: 100%;border: transparent;background: transparent' type='submit'>&nbsp;</button></form></td>";
                 }else{
-                    echo "<td><form action='includes/switchFavorite.inc.php?action=remove&workId=$value[$key]' method='post'><button style='height: 100%;width: 100%;border: transparent;background: transparent' class='invisBtn' type='submit'><b>&#9733;</b></button></form></td>";
+                    echo "<td><form action='includes/switchFavoriteGallery.inc.php?action=remove&workId=$value[$key]' method='post'><button style='height: 100%;width: 100%;border: transparent;background: transparent' class='invisBtn' type='submit'><b>&#9733;</b></button></form></td>";
                 }
             }
             $numOfLikes = getNumberOfLikesFromWorkId($conn,$value[$key]);

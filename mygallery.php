@@ -1,7 +1,6 @@
 <?php
-include_once 'header.php'
-?>
-<?php
+include_once 'header.php';
+
     if ($_SESSION["userId"] === null){
         header("location: ../index.php");
     }

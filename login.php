@@ -17,7 +17,6 @@ if (isset($_GET["error"])){
         echo "<p>Username or password is incorrect!</p>";
     }
 }
-?>
-<?php
+
 include_once 'footer.php'
 ?>

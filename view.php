@@ -29,6 +29,7 @@ if(isset($_GET["id"])){
 }
 header("location: ../index.php?error=UnexpectedError");
 exit();
+
 page:
 $workIndexed = array_values($work);
 echo "<h1>Name: $workIndexed[2]</h1>";
@@ -53,10 +54,10 @@ echo "</p>";
 echo "<p><b>Text:</b> </p>";
 echo "<p style='white-space: pre-wrap;font-size: smaller'>$workIndexed[7]</p><br>";
 
-if ($work["workPub"] !== 0){
+if ($work["workPub"] !== 0){ // only when published
 
     //Favorite
-    if(isset($_SESSION["userId"])){
+    if(isset($_SESSION["userId"])){ //only when loggged in
         if (getFavorite($conn,$_SESSION["userId"],$work["workId"])){
             $key = "workId";
             echo "<a href='includes/switchFavoriteView.inc.php?action=remove&workId=$work[$key]'>Remove favorite</a>";
@@ -66,9 +67,10 @@ if ($work["workPub"] !== 0){
         }
     }
 
+    //Likes
     $numLikes = getNumberOfLikesFromWorkId($conn,$work["workId"]);
     echo "<p><b>Likes:</b>  $numLikes   ";
-    if(isset($_SESSION["userId"])){
+    if(isset($_SESSION["userId"])){ //only when loggged in
         if (!didUserLikedWork($conn,$_SESSION["userId"],$work["workId"])){
             $key = "workId";
             echo "<a href='includes/like.inc.php?id=$work[$key]'>Like</a>";
@@ -90,18 +92,18 @@ if ($work["workPub"] !== 0){
         $key2 = "commentText";
         $key3 = "commentId";
         echo "$value[$key1]: $value[$key2]<br>";
-        if (isset($_SESSION["userId"]) && $value["userId"] === $_SESSION["userId"]){
+        if (isset($_SESSION["userId"]) && $value["userId"] === $_SESSION["userId"]){ //only when loggged in
             $key = "workId";
             echo "
-            <form action='includes/comment.inc.php?id=$work[$key]&remove=$value[$key3]' method='post'>
-                <button type='submit' actio name='submit'>Remove Comment</button>
+            <form style='margin-top: 0' action='includes/comment.inc.php?id=$work[$key]&remove=$value[$key3]' method='post'>
+                <button  type='submit' actio name='submit'>Remove Comment</button>
             </form>
             ";
         }
     }
     echo "</p>";
 
-    if(isset($_SESSION["userId"])){
+    if(isset($_SESSION["userId"])){ //only when loggged in
         $key = "workId";
         echo "
     <section class='comment-form'>

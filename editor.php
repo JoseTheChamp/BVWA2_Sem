@@ -1,7 +1,6 @@
 <?php
-include_once 'header.php'
-?>
-<?php
+include_once 'header.php';
+
 if (!isset($_SESSION["userId"])) {
     header("location: ../index.php");
     exit();
@@ -35,8 +34,8 @@ if (isset($_GET["modify"])) {
         <form action="includes/editor.inc.php" method="post">
             <h3>New Work</h3>
             <div class="form-group p-1">
-                <label for="text">Work name:</label>
-                <input id="text" type="text" name="name" placeholder="Name..."
+                <label for="workName">Work name:</label>
+                <input id="workName" type="text" name="name" placeholder="Name..."
                     <?php
                     if (isset($work)) {
                         $value = $work["workName"];
@@ -141,13 +140,13 @@ if (isset($_GET["modify"])) {
             </div>
             </select>
             <div class="form-group p-1">
-                <label for="text">Text:</label>
-                <textarea id="text" rows="10" cols="120" name="text" placeholder="Text..."><?php
-                    if (isset($work)) {
-                        $value = $work["workText"];
-                        echo "$value";
-                    }
-                    ?></textarea>
+                    <label for="text">Text:</label>
+                    <textarea id="text" rows="10" cols="120" name="text" placeholder="Text..."><?php
+                        if (isset($work)) {
+                            $value = $work["workText"];
+                            echo "$value";
+                        }
+                        ?></textarea>
             </div>
             <button type="submit" name="submit">Save work to gallery</button>
         </form>
@@ -172,8 +171,5 @@ if (isset($_GET["modify"])) {
                 echo "<p>Failed to create tags!</p>";
             }
         }
-        ?>
-
-<?php
 include_once 'footer.php'
 ?>

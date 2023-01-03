@@ -7,11 +7,16 @@ require_once 'includes/functions.inc.php';
     <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
     <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
     <h2>Published works:</h2>
-    <form action="gallery.php" method="post">
+    <form action="gallery.php?filtersChanged=true" method="post">
         <label>Filter by: </label>
         <input type="text" name="filterName" placeholder="Work name..."
         <?php
-        if (isset($_POST["filterName"])){
+        if (!isset($_GET["filtersChanged"])){
+            if (isset($_SESSION["filterName"])){
+                $value = $_SESSION["filterName"];
+                echo "value='$value'";
+            }
+        } else if (isset($_POST["filterName"])){
             $value = $_POST["filterName"];
             $_SESSION["filterName"] = $value;
             echo "value='$value'";
@@ -22,7 +27,12 @@ require_once 'includes/functions.inc.php';
         >
         <input type="text" name="filterPart" placeholder="Part..."
         <?php
-        if (isset($_POST["filterPart"])){
+        if (!isset($_GET["filtersChanged"])){
+            if (isset($_SESSION["filterPart"])){
+                $value = $_SESSION["filterPart"];
+                echo "value='$value'";
+            }
+        } else if (isset($_POST["filterPart"])){
             $value = $_POST["filterPart"];
             $_SESSION["filterPart"] = $value;
             echo "value='$value'";
@@ -33,7 +43,12 @@ require_once 'includes/functions.inc.php';
         >
         <input type="text" name="filterSeries" placeholder="Series..."
         <?php
-        if (isset($_POST["filterSeries"])){
+        if (!isset($_GET["filtersChanged"])){
+            if (isset($_SESSION["filterSeries"])){
+                $value = $_SESSION["filterSeries"];
+                echo "value='$value'";
+            }
+        } else if (isset($_POST["filterSeries"])){
             $value = $_POST["filterSeries"];
             $_SESSION["filterSeries"] = $value;
             echo "value='$value'";
@@ -44,7 +59,12 @@ require_once 'includes/functions.inc.php';
         >
         <input type="text" name="filterAuthor" placeholder="Author..."
         <?php
-        if (isset($_POST["filterAuthor"])){
+        if (!isset($_GET["filtersChanged"])){
+            if (isset($_SESSION["filterAuthor"])){
+                $value = $_SESSION["filterAuthor"];
+                echo "value='$value'";
+            }
+        } else if (isset($_POST["filterAuthor"])){
             $value = $_POST["filterAuthor"];
             $_SESSION["filterAuthor"] = $value;
             echo "value='$value'";
@@ -56,7 +76,11 @@ require_once 'includes/functions.inc.php';
         <select data-placeholder='Genres...' multiple class='chosen-select' name='genres[]'>
             <option value=''></option>
             <?php
-            if (isset($_POST["genres"])){
+            if (!isset($_GET["filtersChanged"])){
+                if (isset($_SESSION["selGenres"])){
+                    $genresSelected = $_SESSION["selGenres"];
+                }
+            } else if (isset($_POST["genres"])){
                 $genresSelected = $_POST["genres"];
                 $_SESSION["selGenres"] = $genresSelected;
             }else{
@@ -83,7 +107,11 @@ require_once 'includes/functions.inc.php';
         <select data-placeholder='Tags...' multiple class='chosen-select' name='tags[]'>
             <option value=''></option>
             <?php
-            if (isset($_POST["tags"])){
+            if (!isset($_GET["filtersChanged"])){
+                if (isset($_SESSION["selTags"])){
+                    $tagsSelected = $_SESSION["selTags"];
+                }
+            } else if (isset($_POST["tags"])){
                 $tagsSelected = $_POST["tags"];
                 $_SESSION["selTags"] = $tagsSelected;
             }else{
@@ -107,10 +135,33 @@ require_once 'includes/functions.inc.php';
                 }
             }
             ?></select><br>
-        <label for="dates">Order by: </label>
+        <label for="favorites">Show only favorites: </label>
+        <input type="checkbox" id="favorites" <?php
+        if (!isset($_GET["filtersChanged"])){
+            if (isset($_SESSION["favorites"])){
+                $value = $_SESSION["favorites"];
+                if ($value){
+                    echo "checked='checked'";
+                }
+            }
+        } else if (isset($_POST["favorites"])){
+            $value = $_POST["favorites"];
+            $_SESSION["favorites"] = $value;
+            if ($value){
+                echo "checked='checked'";
+            }
+        }else{
+            unset($_SESSION["favorites"]);
+        }
+        ?> name="favorites">
+        <label style="margin-left: 10px" for="dates">Order by: </label>
         <input type="radio" id="dates" checked="checked" name="orderBy" value="dates"
         <?php
-        if (!isset($_POST["orderBy"]) || $_POST["orderBy"] === "dates"){
+        if (!isset($_GET["filtersChanged"])){
+            if (!isset($_SESSION["orderBy"]) || $_SESSION["orderBy"] === "dates"){
+                echo "checked='checked'";
+            }
+        } else if (!isset($_POST["orderBy"]) || $_POST["orderBy"] === "dates"){
             echo "checked='checked'";
             $_SESSION["orderBy"] = "dates";
         }
@@ -118,7 +169,11 @@ require_once 'includes/functions.inc.php';
         <label for="dates">Dates</label>
         <input type="radio" id="likes" name="orderBy" value="likes"
             <?php
-            if (isset($_POST["orderBy"]) && $_POST["orderBy"] === "likes"){
+            if (!isset($_GET["filtersChanged"])){
+                if (isset($_SESSION["orderBy"]) && $_SESSION["orderBy"] === "likes"){
+                    echo "checked='checked'";
+                }
+            } else if (isset($_POST["orderBy"]) && $_POST["orderBy"] === "likes"){
                 echo "checked='checked'";
                 $_SESSION["orderBy"] = "likes";
             }
@@ -126,7 +181,11 @@ require_once 'includes/functions.inc.php';
         <label for="likes">Likes</label>
         <input type="radio" id="comments" name="orderBy" value="comments"
             <?php
-            if (isset($_POST["orderBy"]) && $_POST["orderBy"] === "comments"){
+            if (!isset($_GET["filtersChanged"])){
+                if (isset($_SESSION["orderBy"]) && $_SESSION["orderBy"] === "comments"){
+                    echo "checked='checked'";
+                }
+            } else if (isset($_POST["orderBy"]) && $_POST["orderBy"] === "comments"){
                 echo "checked='checked'";
                 $_SESSION["orderBy"] = "comments";
             }
@@ -142,6 +201,11 @@ require_once 'includes/functions.inc.php';
             <th>Author</th>
             <th>Genres</th>
             <th>Tags</th>
+            <?php
+            if (!empty($_SESSION["userId"])){
+                echo "<th>Favorite</th>";
+            }
+            ?>
             <th>Likes</th>
             <th>Comments</th>
             <th>DateTime</th>
@@ -189,6 +253,12 @@ require_once 'includes/functions.inc.php';
                 $sql = $sql . " AND works.workId IN (SELECT works.workId FROM works JOIN work_tag USING(workId) JOIN tags USING(tagId) WHERE tagName = '$tagval')";
             }
         }
+        if (isset($_SESSION["userId"]) && isset($_SESSION["favorites"]) && $_SESSION["favorites"] !== ""){
+            if ($_SESSION["favorites"]){
+                $keyuser = "userId";
+                $sql = $sql . " AND works.workId IN (SELECT works.workId FROM works JOIN favorites USING(workId) WHERE favorites.userId = $_SESSION[$keyuser])";
+            }
+        }
         if (!isset($_SESSION["orderBy"]) || $_SESSION["orderBy"] === "dates"){
             $sql .= " order by works.datePub DESC;";
         }else if($_SESSION["orderBy"] === "likes"){
@@ -197,7 +267,7 @@ require_once 'includes/functions.inc.php';
             $sql .= " group by works.workId order by comments DESC;";
         }
 
-        //echo $sql;
+        echo $sql;
         $data = getAllPublishedWorks($conn,$sql);
 
         foreach ($data as &$value) {
@@ -225,6 +295,14 @@ require_once 'includes/functions.inc.php';
                 echo "$value1, ";
             }
             echo "</td>";
+            if (!empty($_SESSION["userId"])){
+                $res = getFavorite($conn,$_SESSION["userId"],$value[$key]);
+                if (!$res){
+                    echo "<td><form action='includes/switchFavorite.inc.php?action=add&workId=$value[$key]' method='post'><button style='height: 100%;width: 100%;border: transparent;background: transparent' type='submit'>&nbsp;</button></form></td>";
+                }else{
+                    echo "<td><form action='includes/switchFavorite.inc.php?action=remove&workId=$value[$key]' method='post'><button style='height: 100%;width: 100%;border: transparent;background: transparent' class='invisBtn' type='submit'><b>&#9733;</b></button></form></td>";
+                }
+            }
             $numOfLikes = getNumberOfLikesFromWorkId($conn,$value[$key]);
             echo "<td>$numOfLikes</td>";
             $numOfComments = getNumberOfCommentsFromWorkId($conn,$value[$key]);
@@ -239,6 +317,10 @@ require_once 'includes/functions.inc.php';
         $(".chosen-select").chosen({
             no_results_text: "Oops, nothing found!"
         })
+        $(document).ready(function()
+        {
+            $("tr:even").css("background-color", "#e3e3e3");
+        });
     </script>
 <?php
 include_once 'footer.php'

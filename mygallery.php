@@ -215,6 +215,10 @@ include_once 'header.php'
     $(".chosen-select").chosen({
         no_results_text: "Oops, nothing found!"
     })
+    $(document).ready(function()
+    {
+        $("tr:even").css("background-color", "#e3e3e3");
+    });
 </script>
 <?php
 include_once 'footer.php'

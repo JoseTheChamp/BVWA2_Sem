@@ -573,6 +573,49 @@ function getDateOfPublicationFromWorkId($conn,$workId){
     }
 }
 
+function getFavorite($conn,$userId,$workId){
+    $sql = "SELECT * FROM favorites WHERE workId = ? AND userId = ?;";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt,$sql)){
+        header("location: ../index.php?error=stmtfailed");
+        exit();
+    }
+    mysqli_stmt_bind_param($stmt,"ss",$workId,$userId);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    if (mysqli_fetch_assoc($resultData)){
+        mysqli_stmt_close($stmt);
+        return true;
+    }else{
+        mysqli_stmt_close($stmt);
+        return false;
+    }
+}
+
+function removeFavorite($conn,$userId,$workId){
+    $sql = "DELETE FROM favorites WHERE favorites.userId = ? AND favorites.workId = ?;";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt,$sql)){
+        header("location: ../gallery.php?error=stmtfailedDeleteFavorite");
+        exit();
+    }
+    mysqli_stmt_bind_param($stmt,"ss", $userId,$workId);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+function addFavorite($conn,$userId,$workId){
+    $sql = "INSERT INTO favorites (userId, workId) VALUES (?, ?);";
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt,$sql)){
+        header("location: ../gallery.php?error=stmtfailedToFavorite");
+        exit();
+    }
+    mysqli_stmt_bind_param($stmt,"ss", $userId,$workId);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
 
 
 

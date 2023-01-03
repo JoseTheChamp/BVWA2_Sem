@@ -8,6 +8,8 @@ require_once 'includes/functions.inc.php';
     <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
     <h2>Published works:</h2>
     <form action="gallery.php?filtersChanged=true" method="post">
+
+        <!--FILTERING-->
         <label>Filter by: </label>
         <input type="text" name="filterName" placeholder="Work name..."
         <?php
@@ -193,6 +195,8 @@ require_once 'includes/functions.inc.php';
         <label for="comments">Comments</label>
         <input type="submit" value="Submit">
     </form>
+
+    <!--BUILDING THE TABLE-->
     <table>
         <tr>
             <th>Name</th>
@@ -201,7 +205,7 @@ require_once 'includes/functions.inc.php';
             <th>Author</th>
             <th>Genres</th>
             <th>Tags</th>
-            <?php
+            <?php //only while logged in
             if (!empty($_SESSION["userId"])){
                 echo "<th>Favorite</th>";
             }
@@ -215,6 +219,7 @@ require_once 'includes/functions.inc.php';
         require_once "includes/functions.inc.php";
         require_once "includes/dbh.inc.php";
 
+        // BUILDING THE SQL STATEMENT
         $data = "";
         $key = "";
         if (!isset($_SESSION["orderBy"]) || $_SESSION["orderBy"] === "dates"){
@@ -224,7 +229,6 @@ require_once 'includes/functions.inc.php';
         }else{
             $sql = "SELECT *,count(comments.userId) as comments FROM works left join comments on works.workId = comments.workId WHERE workPub = 1 ";
         }
-
         if (isset($_SESSION["filterName"]) && $_SESSION["filterName"] !== ""){
             $key = "filterName";
             $sql = $sql . " AND workName = '$_SESSION[$key]'";
@@ -266,19 +270,24 @@ require_once 'includes/functions.inc.php';
         }else{
             $sql .= " group by works.workId order by comments DESC;";
         }
-
-        echo $sql;
+        //echo $sql;
         $data = getAllPublishedWorks($conn,$sql);
 
+        //BUILDING THE DATA
         foreach ($data as &$value) {
+
             $key = "workName";
             echo "<tr><td>$value[$key]</td>";
+
             $key = "workPart";
             echo "<td>$value[$key]</td>";
+
             $key = "workSeries";
             echo "<td>$value[$key]</td>";
+
             $key = "workAuthor";
             echo "<td>$value[$key]</td>";
+
             $key = "workId";
             $genres = getAllGenresFromWork($conn,$value[$key]);
             echo "<td>";
@@ -295,6 +304,7 @@ require_once 'includes/functions.inc.php';
                 echo "$value1, ";
             }
             echo "</td>";
+
             if (!empty($_SESSION["userId"])){
                 $res = getFavorite($conn,$_SESSION["userId"],$value[$key]);
                 if (!$res){
@@ -303,12 +313,16 @@ require_once 'includes/functions.inc.php';
                     echo "<td><form action='includes/switchFavoriteGallery.inc.php?action=remove&workId=$value[$key]' method='post'><button style='height: 100%;width: 100%;border: transparent;background: transparent' class='invisBtn' type='submit'><b>&#9733;</b></button></form></td>";
                 }
             }
+
             $numOfLikes = getNumberOfLikesFromWorkId($conn,$value[$key]);
             echo "<td>$numOfLikes</td>";
+
             $numOfComments = getNumberOfCommentsFromWorkId($conn,$value[$key]);
             echo "<td>$numOfComments</td>";
+
             $dateOfPublication = $value["datePub"];
             echo "<td>$dateOfPublication</td>";
+
             echo "<td><a href='view.php?id=$value[$key]'>View</a></td></tr>";
         }
         ?>

@@ -13,6 +13,9 @@ include_once 'header.php'
     <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet"/>
 <h2>Your works:</h2>
     <form action="mygallery.php" method="post">
+
+
+        <!--FILTERING-->
         <label>Filter by: </label>
         <input type="text" name="filterName" placeholder="Work name..."
             <?php
@@ -114,6 +117,8 @@ include_once 'header.php'
             ?></select>
         <input type="submit" value="Submit">
     </form>
+
+    <!--BUILDING THE TABLE-->
 <table>
     <tr>
         <th>Name</th>
@@ -127,7 +132,9 @@ include_once 'header.php'
         <th>Delete</th>
         <th>Publish</th>
     </tr>
-        <?php
+
+
+        <?php // CREATING THE SQL STATEMENT
         $key = "userId";
         $sql = "SELECT * FROM works WHERE ownerId = $_SESSION[$key]";
 
@@ -163,6 +170,7 @@ include_once 'header.php'
         //echo $sql;
         $data = getAllWorksFromUser($conn,$sql);
 
+        //BUILDING DATA
         foreach ($data as &$value) {
             $key = "workName";
             echo "<tr><td>$value[$key]</td>";

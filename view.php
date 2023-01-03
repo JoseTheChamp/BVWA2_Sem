@@ -54,6 +54,18 @@ echo "<p><b>Text:</b> </p>";
 echo "<p style='white-space: pre-wrap;font-size: smaller'>$workIndexed[7]</p><br>";
 
 if ($work["workPub"] !== 0){
+
+    //Favorite
+    if(isset($_SESSION["userId"])){
+        if (getFavorite($conn,$_SESSION["userId"],$work["workId"])){
+            $key = "workId";
+            echo "<a href='includes/switchFavoriteView.inc.php?action=remove&workId=$work[$key]'>Remove favorite</a>";
+        }else{
+            $key = "workId";
+            echo "<a href='includes/switchFavoriteView.inc.php?action=add&workId=$work[$key]'>Add favorite</a>";
+        }
+    }
+
     $numLikes = getNumberOfLikesFromWorkId($conn,$work["workId"]);
     echo "<p><b>Likes:</b>  $numLikes   ";
     if(isset($_SESSION["userId"])){
@@ -67,16 +79,7 @@ if ($work["workPub"] !== 0){
     }
     echo "</p>";
 
-    //Favorite
-    if(isset($_SESSION["userId"])){
-        if (getFavorite($conn,$_SESSION["userId"],$work["workId"])){
-            $key = "workId";
-            echo "<a href='includes/switchFavoriteView.inc.php?action=remove&workId=$work[$key]'>Remove favorite</a>";
-        }else{
-            $key = "workId";
-            echo "<a href='includes/switchFavoriteView.inc.php?action=add&workId=$work[$key]'>Add favorite</a>";
-        }
-    }
+
 
 
     echo "<h3>Comments:</h3>";
